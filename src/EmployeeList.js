@@ -1,24 +1,25 @@
 import React from 'react';
-import EmployeeItem from './EmployeeItem';
+import EmployeeItemNew from './EmployeeItemNew';
+import List from '@material-ui/core/List'
 
 class EmployeeList extends React.Component {
 
     render(){
-        const {employess,onEmpSelected,
+        const {employees,onEmpSelected,
             selectedEmployee} = this.props;
 
         const employeeComps =
-            employess.map((emp)=>{
-           return <EmployeeItem key={emp.id}
+            employees.map((emp)=>{
+           return <EmployeeItemNew key={emp.id}
                                 employee={emp}
                                 onEmpSelected={onEmpSelected}
                                 selectedEmployee={selectedEmployee}
             />
         });
 
-        return <div>
+        return <List>
             {employeeComps}
-        </div>
+        </List>
     }
 }
 
