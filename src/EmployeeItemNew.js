@@ -8,13 +8,15 @@ import Avatar from '@material-ui/core/Avatar'
 import profilepic from './icons/profilePic.jpg';
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import IconButton from "@material-ui/core/IconButton";
+import { connect } from "react-redux";
+import {onEmployeeSelected} from './actions/employeeActions';
 
 const EmployeeItemNew = (props) => {
     const {employee, selectedEmployee,
-        onEmpSelected,onDelete} = props;
+        onEmployeeSelected,onDelete} = props;
 
     const testFunc = () => {
-        onEmpSelected(employee);
+        onEmployeeSelected(employee);
     }
 
     let weight = 'normal';
@@ -59,4 +61,15 @@ const EmployeeItemNew = (props) => {
 
 }
 
-export default EmployeeItemNew;
+const mapStateToProps = (state) => {
+    return {
+        selectedEmployee:state.employee.selectedEmployee
+    };
+}
+
+export default connect(
+    mapStateToProps,
+    {
+        onEmployeeSelected
+    }
+)(EmployeeItemNew);

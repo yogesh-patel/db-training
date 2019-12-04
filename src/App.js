@@ -83,7 +83,6 @@ class App extends React.Component {
                     profilePic: 'profilePic.jpg'
                 }
             ],
-            selectedEmployee: null,
             mobileOpen: false,
             open:false,
             screen:'employees',
@@ -91,12 +90,7 @@ class App extends React.Component {
         }
     }
 
-    onSelectedEmployee = (emp) => {
 
-        this.setState({
-            selectedEmployee: emp
-        });
-    }
     handleClose = () => {
         this.setState({employeeToDelete:null,open:false});
     }
@@ -123,15 +117,15 @@ class App extends React.Component {
             {mobileOpen: !this.state.mobileOpen});
     };
 
-    cancelEdit = () => {
-        this.setState({selectedEmployee:null});
-    }
+    // cancelEdit = () => {
+    //     this.setState({selectedEmployee:null});
+    // }
 
-    onNewEmp = () => {
-        this.setState({
-            selectedEmployee: {id:-1,name:'',designation:'',salary:''}
-        });
-    }
+    // onNewEmp = () => {
+    //     this.setState({
+    //         selectedEmployee: {id:-1,name:'',designation:'',salary:''}
+    //     });
+    // }
 
     onSubmit = (employee) => {
         if(employee.id > 0){
@@ -146,16 +140,16 @@ class App extends React.Component {
                }
 
             });
-            this.setState({employees:newArray,selectedEmployee:null});
+            //this.setState({employees:newArray,selectedEmployee:null});
         }else{
             //Create
             const {employees} = this.state;
             const newId = employees.length + 1;
             employees.push(Object.assign({},employee,{id:newId}));
 
-            this.setState({
-                employees,
-                selectedEmployee:null});
+            // this.setState({
+            //     employees,
+            //     selectedEmployee:null});
         }
     }
 
@@ -172,7 +166,7 @@ class App extends React.Component {
     render() {
 
         const {classes} = this.props;
-        const {employees, selectedEmployee, open,screen,
+        const {employees, open,screen,
             openSnakBar,snackContent,snackContentColor} = this.state;
         return <div className={classes.root}>
             <AppBar position="fixed">
@@ -222,14 +216,10 @@ class App extends React.Component {
                     >
 
                         <EmployeeList
-                            selectedEmployee={selectedEmployee}
                             employees={employees}
                             onNewEmp={this.onNewEmp}
                             onDelete={this.onDelete}
-                            screen={screen}
-                            onEmpSelected={
-                                this.onSelectedEmployee
-                            }/>
+                            screen={screen}/>
                     </Drawer>
                 </Hidden>
             </nav>
@@ -238,8 +228,6 @@ class App extends React.Component {
                     screen === 'employees' ?
                         <CenterPanel
                             onSubmit={this.onSubmit}
-                            cancelEdit={this.cancelEdit}
-                            selectedEmployee={selectedEmployee}
                             onTextFieldFocus={this.onTextFieldFocus}
                             onTextFieldBlur={this.onTextFieldBlur}/>
                             :

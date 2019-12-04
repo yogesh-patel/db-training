@@ -1,7 +1,8 @@
 import React from 'react'
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button'
-import Typography from "./App";
+import {onEmployeeSelected} from "./actions/employeeActions";
+import {connect} from "react-redux";
 
 class EmployeeEditForm extends React.Component {
     constructor(props){
@@ -45,7 +46,7 @@ class EmployeeEditForm extends React.Component {
     render(){
         const {id,name,designation,salary,
             idError,nameError,designationError} = this.state;
-        const {selectedEmployee} = this.props;
+        const {selectedEmployee,onEmployeeSelected} = this.props;
         return <div style={{padding:30}}>
             {
                 selectedEmployee && selectedEmployee.id > 0 &&
@@ -99,7 +100,7 @@ class EmployeeEditForm extends React.Component {
                 <Button
                     style={{marginLeft:20}}
                     variant="contained" color="secondary"
-                    onClick={this.props.cancelEdit}>
+                    onClick={()=>onEmployeeSelected(null)}>
                     Cancel
                 </Button>
             </div>
@@ -107,4 +108,15 @@ class EmployeeEditForm extends React.Component {
     }
 }
 
-export default EmployeeEditForm;
+const mapStateToProps = (state) => {
+    return {
+        selectedEmployee:state.employee.selectedEmployee
+    };
+}
+
+export default connect(
+    mapStateToProps,
+    {
+        onEmployeeSelected
+    }
+)(EmployeeEditForm);

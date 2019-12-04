@@ -2,6 +2,7 @@ import React from 'react'
 import Paper from '@material-ui/core/Paper'
 import Typography from "@material-ui/core/Typography";
 import EmployeeEditForm from './EmployeeEditForm'
+import {connect} from "react-redux";
 
 const CenterPanel = (props) => {
     const {selectedEmployee,cancelEdit,onSubmit,
@@ -16,7 +17,6 @@ const CenterPanel = (props) => {
         content = <EmployeeEditForm
             onSubmit={onSubmit}
             cancelEdit={cancelEdit}
-            selectedEmployee={selectedEmployee}
             onTextFieldFocus={onTextFieldFocus}
             onTextFieldBlur={onTextFieldBlur}/>;
     }
@@ -26,4 +26,12 @@ const CenterPanel = (props) => {
     </Paper>
 }
 
-export default CenterPanel;
+const mapStateToProps = (state) => {
+    return {
+        selectedEmployee:state.employee.selectedEmployee
+    };
+}
+
+export default connect(
+    mapStateToProps
+)(CenterPanel);

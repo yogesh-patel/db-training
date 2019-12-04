@@ -3,19 +3,18 @@ import EmployeeItemNew from './EmployeeItemNew';
 import List from '@material-ui/core/List'
 import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
+import {onEmployeeSelected} from "./actions/employeeActions";
+import {connect} from "react-redux";
 
 class EmployeeList extends React.Component {
 
     render(){
-        const {employees,onEmpSelected,
-            selectedEmployee,onDelete,screen} = this.props;
+        const {employees,onDelete,screen,onEmployeeSelected} = this.props;
 
         const employeeComps =
             employees.map((emp)=>{
            return <EmployeeItemNew key={emp.id}
                                 employee={emp}
-                                onEmpSelected={onEmpSelected}
-                                selectedEmployee={selectedEmployee}
                                    onDelete={onDelete}
             />
         });
@@ -27,7 +26,11 @@ class EmployeeList extends React.Component {
             {
                 screen === 'employees' &&
                 <Fab color="secondary"
-                     onClick={this.props.onNewEmp}
+                     onClick={()=>onEmployeeSelected({id:-1,
+                         name:'',
+                         designation:'',
+                         salary:''
+                     })}
                      style={{position:'absolute',bottom:50,right:2}}>
                     <AddIcon />
                 </Fab>
@@ -37,4 +40,11 @@ class EmployeeList extends React.Component {
     }
 }
 
-export default EmployeeList;
+
+
+export default connect(
+    null,
+    {
+        onEmployeeSelected
+    }
+)(EmployeeList);
