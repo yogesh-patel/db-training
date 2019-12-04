@@ -8,12 +8,11 @@ import Drawer from '@material-ui/core/Drawer';
 import Button from '@material-ui/core/Button'
 import Hidden from '@material-ui/core/Hidden';
 import IconButton from '@material-ui/core/IconButton';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import MailIcon from '@material-ui/icons/Mail';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 import MenuIcon from '@material-ui/icons/Menu';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -22,6 +21,8 @@ import EmployeeList from './EmployeeList';
 import Badge from "@material-ui/core/Badge";
 import CenterPanel from './CenterPanel'
 import _ from 'lodash';
+import Snackbar from "@material-ui/core/Snackbar";
+import SnackbarContent from "@material-ui/core/SnackbarContent";
 
 const drawerWidth = 240;
 
@@ -83,7 +84,10 @@ class App extends React.Component {
                 }
             ],
             selectedEmployee: null,
-            mobileOpen: false
+            mobileOpen: false,
+            open:false,
+            screen:'employees',
+            openSnakBar:false
         }
     }
 
@@ -92,6 +96,26 @@ class App extends React.Component {
         this.setState({
             selectedEmployee: emp
         });
+    }
+    handleClose = () => {
+        this.setState({employeeToDelete:null,open:false});
+    }
+    onDelete = (employee) => {
+        this.setState({employeeToDelete:employee,open:true});
+
+    }
+
+    handleDelete = () => {
+        const {employees,employeeToDelete} = this.state;
+        const newArray = [];
+        _.each(employees,(emp)=>{
+            if(emp.id !== employeeToDelete.id){
+                newArray.push(emp);
+            }
+
+        });
+        this.setState({employees:newArray,
+            employeeToDelete:null,open:false});
     }
 
     handleDrawerToggle = () => {
@@ -105,7 +129,7 @@ class App extends React.Component {
 
     onNewEmp = () => {
         this.setState({
-            selectedEmployee: {id:-1}
+            selectedEmployee: {id:-1,name:'',designation:'',salary:''}
         });
     }
 
@@ -122,11 +146,12 @@ class App extends React.Component {
                }
 
             });
-            this.setState({employees:newArray});
+            this.setState({employees:newArray,selectedEmployee:null});
         }else{
             //Create
             const {employees} = this.state;
-            employees.push(employee);
+            const newId = employees.length + 1;
+            employees.push(Object.assign({},employee,{id:newId}));
 
             this.setState({
                 employees,
@@ -134,10 +159,21 @@ class App extends React.Component {
         }
     }
 
+    onTextFieldBlur = () => {
+        this.setState({openSnakBar:false,
+            snackContent:""});
+    }
+    onTextFieldFocus = (label,color) => {
+        this.setState({openSnakBar:true,
+            snackContentColor:color,
+        snackContent:`You are typing ${label}`});
+    }
+
     render() {
 
         const {classes} = this.props;
-        const {employees, selectedEmployee, mobileOpen} = this.state;
+        const {employees, selectedEmployee, open,screen,
+            openSnakBar,snackContent,snackContentColor} = this.state;
         return <div className={classes.root}>
             <AppBar position="fixed">
                 <Toolbar>
@@ -147,16 +183,30 @@ class App extends React.Component {
                         edge="start"
                         onClick={this.handleDrawerToggle}
                         className={classes.menuButton}
+                        style={{flexGrow:1}}
                     >
-                        <MenuIcon/>
                     </IconButton>
-                    <Typography variant="h6" noWrap style={{flexGrow: 1}}>
-                        Responsive drawer
-                    </Typography>
-                    <Badge color="secondary" badgeContent={employees.length}
-                           className={classes.margin}>
-                        <Typography className={classes.padding}>Total Employees</Typography>
-                    </Badge>
+                    {
+                        screen === 'employees' ?
+                            <React.Fragment>
+                                <Button color="secondary"
+                                    onClick={()=>
+                                    this.setState({screen:'dashboard'})}>
+                                    Dashboard
+                                </Button>
+                                <Badge color="secondary" badgeContent={employees.length}
+                                       className={classes.margin}>
+                                    <Typography className={classes.padding}>Total Employees</Typography>
+                                </Badge>
+                            </React.Fragment>
+                            :
+                            <Button color="secondary"
+                                    onClick={()=>
+                                        this.setState({screen:'employees'})}>
+                                Employees
+                            </Button>
+                    }
+
                 </Toolbar>
             </AppBar>
             <nav className={classes.drawer} aria-label="mailbox folders">
@@ -175,6 +225,8 @@ class App extends React.Component {
                             selectedEmployee={selectedEmployee}
                             employees={employees}
                             onNewEmp={this.onNewEmp}
+                            onDelete={this.onDelete}
+                            screen={screen}
                             onEmpSelected={
                                 this.onSelectedEmployee
                             }/>
@@ -182,13 +234,56 @@ class App extends React.Component {
                 </Hidden>
             </nav>
             <main className={classes.content}>
-                <CenterPanel
-                        onSubmit={this.onSubmit}
-                        cancelEdit={this.cancelEdit}
-                        selectedEmployee={selectedEmployee}/>
+                {
+                    screen === 'employees' ?
+                        <CenterPanel
+                            onSubmit={this.onSubmit}
+                            cancelEdit={this.cancelEdit}
+                            selectedEmployee={selectedEmployee}
+                            onTextFieldFocus={this.onTextFieldFocus}
+                            onTextFieldBlur={this.onTextFieldBlur}/>
+                            :
+                        <div>Dashboard</div>
+                }
+
 
             </main>
-
+            <Dialog
+                open={open}
+                onClose={this.handleClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">
+                    {"Confirm"}</DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        Do you really want to delete?
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={this.handleClose} color="primary">
+                        Cancel
+                    </Button>
+                    <Button onClick={this.handleDelete} color="secondary" autoFocus>
+                        Delete
+                    </Button>
+                </DialogActions>
+            </Dialog>
+            <Snackbar
+                anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'center',
+                }}
+                open={openSnakBar}
+                autoHideDuration={null}
+            >
+                <SnackbarContent
+                    message={snackContent}
+                    style={{backgroundColor:snackContentColor}}
+                    role="alert"
+                />
+            </Snackbar>
         </div>
     }
 

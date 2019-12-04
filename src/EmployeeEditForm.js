@@ -1,6 +1,7 @@
 import React from 'react'
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button'
+import Typography from "./App";
 
 class EmployeeEditForm extends React.Component {
     constructor(props){
@@ -18,11 +19,12 @@ class EmployeeEditForm extends React.Component {
             const {selectedEmployee} = nextProps;
             if(selectedEmployee &&
                 selectedEmployee.id !== state.id){
-                return Object.assign({},
+                const newState = Object.assign({},
                     selectedEmployee,
-                    {id:selectedEmployee.id < 0 ?
-                            "" :selectedEmployee.id});
+                    {id:selectedEmployee.id});
+                return newState;
             }
+            return state;
     }
 
     onSubmit = () => {
@@ -30,25 +32,28 @@ class EmployeeEditForm extends React.Component {
         this.props.onSubmit(employee);
     }
 
+    onEmpNameFocus = () => {
+        const {onTextFieldFocus} = this.props;
+        onTextFieldFocus('Employee Name','blue');
+    }
+
+    onEmpNameFocusLost = () => {
+        const {onTextFieldBlur} = this.props;
+        onTextFieldBlur();
+    }
+
     render(){
         const {id,name,designation,salary,
             idError,nameError,designationError} = this.state;
+        const {selectedEmployee} = this.props;
         return <div style={{padding:30}}>
-            <TextField
-                disabled={this.editMode}
-                error={idError}
-                value={id}
-                id="standard-error-helper-text"
-                label="Employee Id"
-                helperText={idError ? "Incorrect entry." : ""}
-                fullWidth
-                placeholder="Id"
-                style={{ margin: 8 }}
-            />
+            {
+                selectedEmployee && selectedEmployee.id > 0 &&
+                <div style={{margin:10}}>{`Id: ${selectedEmployee.id}`}</div>
+            }
             <TextField
                 error={nameError}
                 value={name}
-                id="standard-error-helper-text"
                 label="Employee Name"
                 helperText={nameError ? "Incorrect entry." : ""}
                 fullWidth
@@ -56,6 +61,12 @@ class EmployeeEditForm extends React.Component {
                 style={{ margin: 8 }}
                 onChange={(e)=>
                     this.setState({name:e.target.value})
+                }
+                inputProps={
+                    {
+                      onFocus: this.onEmpNameFocus,
+                      onBlur: this.onEmpNameFocusLost
+                    }
                 }
             />
             <TextField

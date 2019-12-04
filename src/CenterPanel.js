@@ -4,7 +4,8 @@ import Typography from "@material-ui/core/Typography";
 import EmployeeEditForm from './EmployeeEditForm'
 
 const CenterPanel = (props) => {
-    const {selectedEmployee,cancelEdit,onSubmit} = props;
+    const {selectedEmployee,cancelEdit,onSubmit,
+        onTextFieldFocus,onTextFieldBlur} = props;
 
     let content = <Typography variant="h2"
                               style={{textAlign:'center',
@@ -15,7 +16,9 @@ const CenterPanel = (props) => {
         content = <EmployeeEditForm
             onSubmit={onSubmit}
             cancelEdit={cancelEdit}
-            selectedEmployee={selectedEmployee}/>;
+            selectedEmployee={selectedEmployee}
+            onTextFieldFocus={onTextFieldFocus}
+            onTextFieldBlur={onTextFieldBlur}/>;
     }
     return <Paper style={{flex:1,flexGrow:1,
         height:window.innerHeight - 80}}>

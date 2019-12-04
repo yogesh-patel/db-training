@@ -8,7 +8,7 @@ class EmployeeList extends React.Component {
 
     render(){
         const {employees,onEmpSelected,
-            selectedEmployee} = this.props;
+            selectedEmployee,onDelete,screen} = this.props;
 
         const employeeComps =
             employees.map((emp)=>{
@@ -16,6 +16,7 @@ class EmployeeList extends React.Component {
                                 employee={emp}
                                 onEmpSelected={onEmpSelected}
                                 selectedEmployee={selectedEmployee}
+                                   onDelete={onDelete}
             />
         });
 
@@ -23,11 +24,15 @@ class EmployeeList extends React.Component {
         <List>
             {employeeComps}
         </List>
-            <Fab color="secondary"
-                onClick={this.props.onNewEmp}
-                 style={{position:'absolute',bottom:50,right:2}}>
-                <AddIcon />
-            </Fab>
+            {
+                screen === 'employees' &&
+                <Fab color="secondary"
+                     onClick={this.props.onNewEmp}
+                     style={{position:'absolute',bottom:50,right:2}}>
+                    <AddIcon />
+                </Fab>
+            }
+
         </div>
     }
 }
