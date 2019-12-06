@@ -46,7 +46,7 @@ const EmployeeItemNew = (props) => {
             </ListItemAvatar>
             <ListItemText
                 primary={employee.name}
-                secondary={employee.designation}
+                secondary={`${employee.designation} - ${employee.salary}`}
             />
             <ListItemSecondaryAction>
                 <IconButton edge="end" aria-label="delete"
@@ -61,15 +61,17 @@ const EmployeeItemNew = (props) => {
 
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (store) => {
     return {
-        selectedEmployee:state.employee.selectedEmployee
+        selectedEmployee:store.employee.selectedEmployee,
+        departs:store.department.departments
     };
 }
 
 export default connect(
     mapStateToProps,
+
     {
         onEmployeeSelected
     }
-)(EmployeeItemNew);
+)  (EmployeeItemNew);

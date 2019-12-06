@@ -2,8 +2,6 @@ import React from 'react';
 
 import {withStyles} from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
-import Paper from '@material-ui/core/Paper';
-import Divider from '@material-ui/core/Divider';
 import Drawer from '@material-ui/core/Drawer';
 import Button from '@material-ui/core/Button'
 import Hidden from '@material-ui/core/Hidden';
@@ -13,9 +11,10 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import MenuIcon from '@material-ui/icons/Menu';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
+import {connect} from 'react-redux';
+import {fetchEmployees} from './actions/employeeActions';
 
 import EmployeeList from './EmployeeList';
 import Badge from "@material-ui/core/Badge";
@@ -23,12 +22,15 @@ import CenterPanel from './CenterPanel'
 import _ from 'lodash';
 import Snackbar from "@material-ui/core/Snackbar";
 import SnackbarContent from "@material-ui/core/SnackbarContent";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import Dashboard from './Dashboard';
 
 const drawerWidth = 240;
 
 const useStyles = {
     root: {
         display: 'flex',
+        position: 'relative'
     },
     drawer: {
         width: drawerWidth,
@@ -60,34 +62,16 @@ class App extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            employees: [
-                {
-                    id: 1,
-                    name: 'A',
-                    salary: 1000,
-                    designation: 'Software Developer',
-                    profilePic: 'profilePic.jpg'
-                },
-                {
-                    id: 2,
-                    name: 'B',
-                    salary: 1000,
-                    designation: 'Software Developer',
-                    profilePic: 'profilePic.jpg'
-                },
-                {
-                    id: 3,
-                    name: 'C',
-                    salary: 1000,
-                    designation: 'Software Developer',
-                    profilePic: 'profilePic.jpg'
-                }
-            ],
             mobileOpen: false,
             open:false,
             screen:'employees',
             openSnakBar:false
         }
+    }
+
+    componentDidMount() {
+        const {fetchEmployees} = this.props;
+        fetchEmployees();
     }
 
 
@@ -165,10 +149,15 @@ class App extends React.Component {
 
     render() {
 
-        const {classes} = this.props;
-        const {employees, open,screen,
+        const {classes,employees,showProgress} = this.props;
+        const {open,screen,
             openSnakBar,snackContent,snackContentColor} = this.state;
         return <div className={classes.root}>
+            <CircularProgress style={{
+                position:'absolute',top:0,
+                left:0,bottom:0,right:0,
+                margin:'300px auto',
+                display:showProgress ? 'block':'none'}}/>
             <AppBar position="fixed">
                 <Toolbar>
                     <IconButton
@@ -216,7 +205,6 @@ class App extends React.Component {
                     >
 
                         <EmployeeList
-                            employees={employees}
                             onNewEmp={this.onNewEmp}
                             onDelete={this.onDelete}
                             screen={screen}/>
@@ -231,7 +219,7 @@ class App extends React.Component {
                             onTextFieldFocus={this.onTextFieldFocus}
                             onTextFieldBlur={this.onTextFieldBlur}/>
                             :
-                        <div>Dashboard</div>
+                        <Dashboard />
                 }
 
 
@@ -272,9 +260,20 @@ class App extends React.Component {
                     role="alert"
                 />
             </Snackbar>
+
+
         </div>
     }
 
 }
 
-export default withStyles(useStyles)(App);
+const mapStateToProps = (store) => {
+    return {
+        employees: store.employee.employees,
+        showProgress:store.app.loading
+    }
+}
+export default withStyles(useStyles)(
+    connect(mapStateToProps,{
+        fetchEmployees
+    })(App));

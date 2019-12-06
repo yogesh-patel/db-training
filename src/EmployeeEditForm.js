@@ -1,7 +1,7 @@
 import React from 'react'
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button'
-import {onEmployeeSelected} from "./actions/employeeActions";
+import {onEmployeeSelected,onEmployeeSubmit} from "./actions/employeeActions";
 import {connect} from "react-redux";
 
 class EmployeeEditForm extends React.Component {
@@ -30,7 +30,8 @@ class EmployeeEditForm extends React.Component {
 
     onSubmit = () => {
         const employee = Object.assign({},this.state);
-        this.props.onSubmit(employee);
+
+        this.props.onEmployeeSubmit(employee);
     }
 
     onEmpNameFocus = () => {
@@ -117,6 +118,7 @@ const mapStateToProps = (state) => {
 export default connect(
     mapStateToProps,
     {
-        onEmployeeSelected
+        onEmployeeSelected,
+        onEmployeeSubmit
     }
 )(EmployeeEditForm);

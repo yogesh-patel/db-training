@@ -2,10 +2,16 @@ import {
     ON_EMPLOYEE_SELECTED,
     ON_REQUEST_SEND,
     ON_REQUEST_COMPLETE,
-    ON_EMPLOYEE_RECEIVED
+    ON_EMPLOYEE_RECEIVED,
+    ON_SEARCH_CHANGED, ON_EMPLOYEE_ADDED
 } from "../constant";
 
-
+export const onSearchChange = (text) => {
+    return {
+        type:ON_SEARCH_CHANGED,
+        payload:text
+    }
+}
 export const onEmployeeSelected = (employee) => {
 
     return (dispatch) => {
@@ -22,6 +28,7 @@ export const fetchEmployees = () => {
 
     return (dispatch) => {
         dispatch({type:ON_REQUEST_SEND});
+
         //Call API
         setTimeout(()=>{
             const employees = [{
@@ -55,4 +62,13 @@ export const fetchEmployees = () => {
         },1000);
     }
 
+}
+
+export const onEmployeeSubmit = (employee) => {
+    return dispatch => {
+        dispatch({
+            type:ON_EMPLOYEE_ADDED,
+            payload:employee
+        })
+    }
 }

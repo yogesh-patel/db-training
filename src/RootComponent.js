@@ -6,6 +6,7 @@ import createStore from './store';
 const RootComponent = () => {
 
     const store = createStore();
+
     return <Provider store={store}>
         <App/>
     </Provider>
