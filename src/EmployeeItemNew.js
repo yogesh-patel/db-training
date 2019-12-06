@@ -46,7 +46,7 @@ const EmployeeItemNew = (props) => {
             </ListItemAvatar>
             <ListItemText
                 primary={employee.name}
-                secondary={`${employee.designation} - ${employee.salary}`}
+                secondary={`${employee.username} - ${employee.email}`}
             />
             <ListItemSecondaryAction>
                 <IconButton edge="end" aria-label="delete"

@@ -6,6 +6,17 @@ import {
     ON_SEARCH_CHANGED, ON_EMPLOYEE_ADDED
 } from "../constant";
 
+export const addTwoNumber = (x,y) => {
+    return dispatch => {
+        if(x > 10){
+            dispatch({type:'GOOD_NUMBER',payload:x+y})
+        }else if(y > 10){
+            dispatch({type:'BAD_NUMBER',payload:x-y})
+        }
+    }
+}
+
+
 export const onSearchChange = (text) => {
     return {
         type:ON_SEARCH_CHANGED,
@@ -70,5 +81,40 @@ export const onEmployeeSubmit = (employee) => {
             type:ON_EMPLOYEE_ADDED,
             payload:employee
         })
+    }
+}
+
+export const getUsers = () => {
+    return dispatch => {
+        const endpoint = "https://jsonplaceholder.typicode.com/users";
+
+        fetch(endpoint,{
+            method: 'GET',
+            headers: {
+            }
+        }).then((response)=>{
+            if(response.status === 200){
+                response.json()
+                    .then((jsonData)=>{
+
+                        console.log(jsonData);
+                        dispatch({
+                            type:ON_EMPLOYEE_RECEIVED,
+                            payload: jsonData
+                        });
+                    })
+                    .catch(error=>{
+
+                    })
+            }
+
+        })
+        .catch((error)=>{
+
+        });
+
+        console.log("End ....");
+
+        dispatch({type:'TEST123'});
     }
 }

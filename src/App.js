@@ -14,7 +14,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import {connect} from 'react-redux';
-import {fetchEmployees} from './actions/employeeActions';
+import {fetchEmployees,getUsers} from './actions/employeeActions';
 
 import EmployeeList from './EmployeeList';
 import Badge from "@material-ui/core/Badge";
@@ -70,8 +70,9 @@ class App extends React.Component {
     }
 
     componentDidMount() {
-        const {fetchEmployees} = this.props;
-        fetchEmployees();
+        const {fetchEmployees,getUsers} = this.props;
+        // fetchEmployees();
+        getUsers();
     }
 
 
@@ -275,5 +276,6 @@ const mapStateToProps = (store) => {
 }
 export default withStyles(useStyles)(
     connect(mapStateToProps,{
-        fetchEmployees
+        fetchEmployees,
+        getUsers
     })(App));
